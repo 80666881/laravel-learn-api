@@ -8,7 +8,7 @@ use App\Lesson;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Response;
 
-class LessonsController extends Controller {
+class LessonsController extends ApiController {
     protected $lessonTransformer;
 
     public function __construct(LessonTransformer $lessonTransformer) {
@@ -17,19 +17,22 @@ class LessonsController extends Controller {
 
     public function index() {
         $lessons = Lesson::all();
-        return Response::json([
+        return $this->response([
             'status' => 'success',
-            'status_code' => 200,
-            'data' => $this->lessonTransformer->transformCollection($lessons->toArray())
+            'data' => $this->lessonTransformer->transformCollection($lessons)
         ]);
     }
 
     public function show($id) {
-        $lesson = Lesson::findOrFail($id);
-        return Response::json([
+        $lesson = Lesson::find($id);
+        //没有找到应该返回404
+        if (!$lesson) {
+            return $this->responseNotFound();
+        }
+        return $this->response([
             'status' => 'success',
-            'status_code' => 200,
             'data' => $this->lessonTransformer->transform($lesson)
+
         ]);
     }
 }
