@@ -5,15 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Lesson;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Response;
 
 class LessonsController extends Controller
 {
     //
     public function index(){
-        return Lesson::all();//返回全部数据，json格式
+        $lessons = Lesson::all();
+        return Response::json([
+            'status'=>'success',
+            'status_code'=>200,
+            'data'=>$lessons->toArray()
+        ]);
     }
 
     public function show($id){
-        return Lesson::findOrFail($id);
+        $lesson =  Lesson::findOrFail($id);
+        return Response::json([
+            'status'=>'success',
+            'status_code'=>200,
+            'data'=>$lesson->toArray()
+        ]);
     }
 }
