@@ -14,21 +14,25 @@ class LessonsController extends Controller {
         return Response::json([
             'status' => 'success',
             'status_code' => 200,
-            'data' => $this->transform($lessons)]);
+            'data' => $this->transformCollection($lessons)]);
     }
 
     public function show($id) {
         $lesson = Lesson::findOrFail($id);
-        return Response::json(['status' => 'success', 'status_code' => 200, 'data' => $lesson->toArray()]);
+        return Response::json([
+            'status' => 'success',
+            'status_code' => 200,
+            'data' => $this->transform($lesson)]);
     }
 
-    private function transform($lessons) {
-        return array_map(function ($lesson) {
+    private function transform($lesson) {
             return [
                 'title' => $lesson['title'],
                 'content' => $lesson['body'],
                 'is_free' => (boolean)$lesson['free']
             ];
-        }, $lessons->toArray());
+    }
+    private function transformCollection($lessons) {
+        return array_map([$this,'transform'], $lessons->toArray());
     }
 }
