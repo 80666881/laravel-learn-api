@@ -25,6 +25,8 @@ $api->version('v1', function ($api) {
         $api->post('user/login','AuthController@authenticate');//返回token
         $api->post('user/register','AuthController@register');
         $api->group(['middleware'=>'jwt.auth'],function($api){
+            //根据token获取目前登录的用户
+            $api->get('user/me','AuthController@getAuthenticatedUser');
             $api->get('lessons','LessonsController@index');
             $api->get('lessons/{id}','LessonsController@show');
         });
